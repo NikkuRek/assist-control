@@ -1,0 +1,81 @@
+[
+  {
+    "id": "FIJO_OFICINA",
+    "nombre": "Oficina Regular",
+    "totalDiasCiclo": 7,
+    "fechaAncla": "2024-01-01",
+    "dias": [
+      { "n": 1, "in": "08:00", "out": "17:00" },
+      { "n": 2, "in": "08:00", "out": "17:00" },
+      { "n": 3, "in": "08:00", "out": "17:00" },
+      { "n": 4, "in": "08:00", "out": "17:00" },
+      { "n": 5, "in": "08:00", "out": "17:00" },
+      { "n": 6, "tipo": "libre" },
+      { "n": 7, "tipo": "libre" }
+    ]
+  },
+  {
+    "id": "FIJO_LABORATORIO",
+    "nombre": "Laboratorio Regular",
+    "totalDiasCiclo": 7,
+    "fechaAncla": "2024-01-01",
+    "dias": [
+      { "n": 1, "in": "07:00", "out": "15:00" },
+      { "n": 2, "in": "07:00", "out": "15:00" },
+      { "n": 3, "in": "07:00", "out": "15:00" },
+      { "n": 4, "in": "07:00", "out": "15:00" },
+      { "n": 5, "in": "07:00", "out": "15:00" },
+      { "n": 6, "tipo": "libre" },
+      { "n": 7, "tipo": "libre" }
+    ]
+  },
+  {
+    "id": "FIJO_RADIOLOGIA",
+    "nombre": "Radiologia Regular",
+    "totalDiasCiclo": 7,
+    "fechaAncla": "2024-01-01",
+    "dias": [
+      { "n": 1, "in": "07:00", "out": "13:00" },
+      { "n": 2, "in": "07:00", "out": "13:00" },
+      { "n": 3, "in": "07:00", "out": "13:00" },
+      { "n": 4, "in": "07:00", "out": "13:00" },
+      { "n": 5, "in": "07:00", "out": "13:00" },
+      { "n": 6, "tipo": "libre" },
+      { "n": 7, "tipo": "libre" }
+    ]
+  },
+  {
+    "id": "ROTATIVO_14D",
+    "nombre": "Rotativo Semanal A/B",
+    "totalDiasCiclo": 14,
+    "fechaAncla": "2025-01-06",
+    "dias": [
+      { "n": 1, "in": "08:00", "out": "17:00" },
+      { "n": 2, "in": "08:00", "out": "17:00" },
+      { "n": 3, "in": "08:00", "out": "17:00" },
+      { "n": 4, "in": "08:00", "out": "17:00" },
+      { "n": 5, "in": "08:00", "out": "17:00" },
+      { "n": 6, "tipo": "libre" },
+      { "n": 7, "tipo": "libre" },
+      { "n": 8, "in": "07:30", "out": "18:30" },
+      { "n": 9, "in": "07:30", "out": "18:30" },
+      { "n": 10, "in": "07:30", "out": "18:30" },
+      { "n": 11, "in": "07:30", "out": "18:30" },
+      { "n": 12, "in": "07:30", "out": "18:30" },
+      { "n": 13, "tipo": "libre" },
+      { "n": 14, "tipo": "libre" }
+    ]
+  },
+  {
+    "id": "DINAMICO_GUARDIA",
+    "nombre": "Guardia 4x4",
+    "totalDiasCiclo": 4,
+    "fechaAncla": "2025-12-22",
+    "dias": [
+      { "n": 1, "in": "07:00", "out": "19:00" },
+      { "n": 2, "in": "19:00", "out": "07:00", "cruce": true },
+      { "n": 3, "tipo": "saliente" },
+      { "n": 4, "tipo": "libre" }
+    ]
+  }
+]
