@@ -1,4 +1,6 @@
 {
+  "name": "assist-control",
+  "version": "1.0.0",
   "dependencies": {
     "digest-fetch": "^3.1.1",
     "express": "^5.2.1"
