@@ -17,85 +17,109 @@ CONFIG.url_users  = `http://${CONFIG.ip}/ISAPI/AccessControl/UserInfo/Search?for
 
 const client = new DigestFetch(CONFIG.user, CONFIG.pass);
 
-// --- ARCHIVOS ---
+// --- ARCHIVOS DE DATOS ---
 const FILE_SCHEDULES = path.join(__dirname, 'data', 'schedules.json');
 const FILE_EMPLOYEES = path.join(__dirname, 'data', 'employees.json');
+const FILE_DEPTS     = path.join(__dirname, 'data', 'departments.json');
 
-// Helpers IO
-async function readJson(file) {
-    try { return JSON.parse(await fs.readFile(file, 'utf-8')); } catch (e) { return []; }
+// Helpers
+async function readJson(file) { 
+    try { return JSON.parse(await fs.readFile(file, 'utf-8')); } 
+    catch (e) { return {}; } 
 }
-async function writeJson(file, data) {
-    await fs.writeFile(file, JSON.stringify(data, null, 2), 'utf-8');
-}
+async function writeJson(file, data) { await fs.writeFile(file, JSON.stringify(data, null, 2), 'utf-8'); }
 
-// --- API CRUD ---
+// --- API GENERAL ---
 app.get('/api/schedules', async (req, res) => res.json(await readJson(FILE_SCHEDULES)));
 app.post('/api/schedules', async (req, res) => { await writeJson(FILE_SCHEDULES, req.body); res.json({ success: true }); });
 
 app.get('/api/employees', async (req, res) => res.json(await readJson(FILE_EMPLOYEES)));
 app.post('/api/employees', async (req, res) => { await writeJson(FILE_EMPLOYEES, req.body); res.json({ success: true }); });
 
-// --- API HIKVISION: OBTENER USUARIOS DEL DISPOSITIVO ---
+// --- API HIKVISION: USUARIOS (CON PAGINACIÓN Y DICCIONARIO) ---
 app.get('/api/hik-users', async (req, res) => {
-    console.log("📡 Consultando usuarios en el biométrico...");
-    
-    // Payload para pedir usuarios
-    const payload = {
-        UserInfoSearchCond: {
-            searchID: "user_search_" + Date.now(),
-            maxResults: 1000, // Pedimos hasta 1000 usuarios de una vez
-            searchResultPosition: 0
-        }
-    };
+    console.log("📡 Conectando al biométrico para descargar usuarios...");
 
     try {
-        const response = await client.fetch(CONFIG.url_users, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        // 1. LEER DICCIONARIO DE DEPARTAMENTOS
+        const deptMap = await readJson(FILE_DEPTS);
 
-        if (!response.ok) throw new Error(`Error Hikvision: ${response.status}`);
+        // 2. BUCLE DE PAGINACIÓN PARA USUARIOS
+        let allUsersRaw = [];
+        let position = 0;
+        let hasMore = true;
+        const CHUNK = 30; // Pedimos de 30 en 30 porque el equipo corta si pedimos más
 
-        const data = await response.json();
-        
-        let users = [];
-        if (data.UserInfoSearch && data.UserInfoSearch.UserInfo) {
-            // Normalizar a array (si es uno solo, Hikvision a veces no devuelve array)
-            const list = Array.isArray(data.UserInfoSearch.UserInfo) 
-                ? data.UserInfoSearch.UserInfo 
-                : [data.UserInfoSearch.UserInfo];
+        while(hasMore) {
+            const userPayload = {
+                UserInfoSearchCond: { 
+                    searchID: "usr_pag_" + Date.now(), 
+                    maxResults: CHUNK, 
+                    searchResultPosition: position 
+                }
+            };
+            
+            // console.log(`⏳ Descargando bloque desde posición ${position}...`); // Descomentar para debug
+            
+            const userRes = await client.fetch(CONFIG.url_users, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(userPayload)
+            });
 
-            users = list.map(u => ({
-                id: u.employeeNo,
-                name: u.name
-            }));
+            if (!userRes.ok) {
+                console.warn(`⚠️ Error en bloque ${position}: ${userRes.status}`);
+                hasMore = false;
+                break;
+            }
+
+            const userData = await userRes.json();
+
+            if (userData.UserInfoSearch && userData.UserInfoSearch.UserInfo) {
+                const list = Array.isArray(userData.UserInfoSearch.UserInfo) 
+                    ? userData.UserInfoSearch.UserInfo 
+                    : [userData.UserInfoSearch.UserInfo];
+                
+                allUsersRaw = allUsersRaw.concat(list);
+                
+                // Si recibimos menos de lo que pedimos, es que ya no hay más
+                if (list.length < CHUNK) {
+                    hasMore = false;
+                } else {
+                    position += list.length;
+                }
+            } else {
+                // No devolvió nada, fin de la lista
+                hasMore = false;
+            }
         }
 
-        console.log(`✅ ${users.length} usuarios encontrados en el dispositivo.`);
+        console.log(`✅ Total descargado: ${allUsersRaw.length} usuarios.`);
+
+        // 3. PROCESAR DATOS
+        const users = allUsersRaw.map(u => {
+            const gid = u.groupId || u.userGroup || u.belongGroup; 
+            const deptName = deptMap[gid] || (gid ? `GRUPO ID ${gid}` : "Sin Asignar");
+
+            return {
+                id: u.employeeNo,
+                name: u.name,
+                department: deptName 
+            };
+        });
+
         res.json(users);
 
     } catch (error) {
-        console.error("❌ Error fetching users:", error.message);
+        console.error("❌ Error General:", error.message);
         res.status(500).json({ error: error.message });
     }
 });
 
-// --- API HIKVISION: EVENTOS (La de siempre) ---
+// --- API EVENTOS (Sin cambios) ---
 app.get('/api/eventos', async (req, res) => {
-    // ... (Mantén tu código de eventos anterior aquí) ...
-    // Para no hacer el código gigante, asumo que dejas la lógica del 
-    // endpoint /api/eventos que ya funcionaba perfectamente.
-    // Si la necesitas completa dímelo.
-    
-    // --- PEGA AQUÍ TU LÓGICA DE EVENTOS ANTERIOR ---
     const { start, end } = req.query;
     if (!start || !end) return res.status(400).json({ error: 'Faltan fechas' });
-
     const strStartTime = `${start}T00:00:00-04:00`;
     const strEndTime = `${end}T23:59:59-04:00`;
-
     let allRawEvents = [];
     let position = 0;
     let hasMore = true;
@@ -105,26 +129,21 @@ app.get('/api/eventos', async (req, res) => {
         while (hasMore) {
             const payload = {
                 AcsEventCond: {
-                    searchID: "web_" + Date.now(),
-                    searchResultPosition: position,
-                    maxResults: CHUNK_SIZE,
-                    major: 0, minor: 0,
-                    startTime: strStartTime, endTime: strEndTime
+                    searchID: "web_" + Date.now(), searchResultPosition: position, maxResults: CHUNK_SIZE,
+                    major: 0, minor: 0, startTime: strStartTime, endTime: strEndTime
                 }
             };
             const response = await client.fetch(CONFIG.url_events, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
             });
+            if(!response.ok) { hasMore = false; break; }
             const data = await response.json();
-
             if (data.AcsEvent && data.AcsEvent.InfoList && data.AcsEvent.InfoList.length > 0) {
                 const batch = data.AcsEvent.InfoList;
                 allRawEvents = allRawEvents.concat(batch);
                 if (batch.length < CHUNK_SIZE) hasMore = false; else position += batch.length;
             } else { hasMore = false; }
         }
-        
-        // Mapeo simple para que el frontend lo reciba
         const asistencia = allRawEvents
             .filter(e => (e.minor === 75 || e.minor === 76 || e.minor === 38 || e.minor === 167) && e.employeeNoString)
             .map(e => ({
@@ -135,7 +154,6 @@ app.get('/api/eventos', async (req, res) => {
                 metodo: e.minor === 167 ? "Rostro" : "Huella/Tarjeta"
             }))
             .sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
-
         res.json(asistencia);
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
