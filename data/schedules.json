@@ -1,0 +1,358 @@
+[
+  {
+    "id": "FIJO_OFICINA",
+    "nombre": "Horario: 8am - 5pm",
+    "totalDiasCiclo": 7,
+    "fechaAncla": "2024-01-01",
+    "dias": [
+      {
+        "n": 1,
+        "in": "08:00",
+        "out": "17:00"
+      },
+      {
+        "n": 2,
+        "in": "08:00",
+        "out": "17:00"
+      },
+      {
+        "n": 3,
+        "in": "08:00",
+        "out": "17:00"
+      },
+      {
+        "n": 4,
+        "in": "08:00",
+        "out": "17:00"
+      },
+      {
+        "n": 5,
+        "in": "08:00",
+        "out": "17:00"
+      },
+      {
+        "n": 6,
+        "tipo": "libre"
+      },
+      {
+        "n": 7,
+        "tipo": "libre"
+      }
+    ]
+  },
+  {
+    "id": "FIJO_LABORATORIO",
+    "nombre": "Laboratorio: 7am - 3pm",
+    "totalDiasCiclo": 7,
+    "fechaAncla": "2024-01-01",
+    "dias": [
+      {
+        "n": 1,
+        "in": "07:00",
+        "out": "15:00"
+      },
+      {
+        "n": 2,
+        "in": "07:00",
+        "out": "15:00"
+      },
+      {
+        "n": 3,
+        "in": "07:00",
+        "out": "15:00"
+      },
+      {
+        "n": 4,
+        "in": "07:00",
+        "out": "15:00"
+      },
+      {
+        "n": 5,
+        "in": "07:00",
+        "out": "15:00"
+      },
+      {
+        "n": 6,
+        "tipo": "libre"
+      },
+      {
+        "n": 7,
+        "tipo": "libre"
+      }
+    ]
+  },
+  {
+    "id": "FIJO_RADIOLOGIA",
+    "nombre": "Radiologia Regular",
+    "totalDiasCiclo": 7,
+    "fechaAncla": "2024-01-01",
+    "dias": [
+      {
+        "n": 1,
+        "in": "07:00",
+        "out": "13:00"
+      },
+      {
+        "n": 2,
+        "in": "07:00",
+        "out": "13:00"
+      },
+      {
+        "n": 3,
+        "in": "07:00",
+        "out": "13:00"
+      },
+      {
+        "n": 4,
+        "in": "07:00",
+        "out": "13:00"
+      },
+      {
+        "n": 5,
+        "in": "07:00",
+        "out": "13:00"
+      },
+      {
+        "n": 6,
+        "tipo": "libre"
+      },
+      {
+        "n": 7,
+        "tipo": "libre"
+      }
+    ]
+  },
+  {
+    "id": "ROTATIVO_14D01",
+    "nombre": "Ventas: 9:30am -6:30pm",
+    "totalDiasCiclo": 7,
+    "fechaAncla": "2025-01-06",
+    "dias": [
+      {
+        "n": 1,
+        "in": "09:30",
+        "out": "18:03"
+      },
+      {
+        "n": 2,
+        "in": "09:30",
+        "out": "18:30"
+      },
+      {
+        "n": 3,
+        "in": "09:30",
+        "out": "18:30"
+      },
+      {
+        "n": 4,
+        "in": "09:30",
+        "out": "18:30"
+      },
+      {
+        "n": 5,
+        "in": "09:30",
+        "out": "18:30"
+      },
+      {
+        "n": 6,
+        "tipo": "libre"
+      },
+      {
+        "n": 7,
+        "tipo": "libre"
+      }
+    ]
+  },
+  {
+    "id": "DINAMICO_GUARDIA",
+    "nombre": "Guardia 4x4",
+    "totalDiasCiclo": 4,
+    "fechaAncla": "2025-12-22",
+    "dias": [
+      {
+        "n": 1,
+        "in": "07:00",
+        "out": "19:00"
+      },
+      {
+        "n": 2,
+        "in": "19:00",
+        "out": "07:00",
+        "cruce": true
+      },
+      {
+        "n": 3,
+        "tipo": "saliente"
+      },
+      {
+        "n": 4,
+        "tipo": "libre"
+      }
+    ]
+  },
+  {
+    "id": "SCH_1773860302877",
+    "nombre": "Horario: 7am - 4pm",
+    "totalDiasCiclo": 7,
+    "fechaAncla": "2026-03-16",
+    "dias": [
+      {
+        "n": 1,
+        "in": "07:00",
+        "out": "16:00"
+      },
+      {
+        "n": 2,
+        "in": "07:00",
+        "out": "16:00"
+      },
+      {
+        "n": 3,
+        "in": "07:00",
+        "out": "16:00"
+      },
+      {
+        "n": 4,
+        "in": "07:00",
+        "out": "16:00"
+      },
+      {
+        "n": 5,
+        "in": "07:00",
+        "out": "16:00"
+      },
+      {
+        "n": 6,
+        "tipo": "libre"
+      },
+      {
+        "n": 7,
+        "tipo": "libre"
+      }
+    ]
+  },
+  {
+    "id": "SCH_1773860569298",
+    "nombre": "Lunes - Jueves",
+    "totalDiasCiclo": 7,
+    "fechaAncla": "2026-03-16",
+    "dias": [
+      {
+        "n": 1,
+        "in": "08:00",
+        "out": "17:00"
+      },
+      {
+        "n": 2,
+        "tipo": "libre"
+      },
+      {
+        "n": 3,
+        "tipo": "libre"
+      },
+      {
+        "n": 4,
+        "in": "08:00",
+        "out": "17:00"
+      },
+      {
+        "n": 5,
+        "tipo": "libre"
+      },
+      {
+        "n": 6,
+        "tipo": "libre"
+      },
+      {
+        "n": 7,
+        "tipo": "libre"
+      }
+    ]
+  },
+  {
+    "id": "SCH_1773865742937",
+    "nombre": "Sin asignar",
+    "totalDiasCiclo": 1,
+    "fechaAncla": "2026-03-16",
+    "dias": []
+  },
+  {
+    "id": "SCH_1774554154518",
+    "nombre": "Ventas Fines: 10am - 6pm",
+    "totalDiasCiclo": 7,
+    "fechaAncla": "2026-03-23",
+    "dias": [
+      {
+        "n": 1,
+        "tipo": "libre"
+      },
+      {
+        "n": 2,
+        "tipo": "libre"
+      },
+      {
+        "n": 3,
+        "tipo": "libre"
+      },
+      {
+        "n": 4,
+        "tipo": "libre"
+      },
+      {
+        "n": 5,
+        "tipo": "libre"
+      },
+      {
+        "n": 6,
+        "in": "10:00",
+        "out": "18:00"
+      },
+      {
+        "n": 7,
+        "in": "10:00",
+        "out": "18:00"
+      }
+    ]
+  },
+  {
+    "id": "SCH_1774554781812",
+    "nombre": "Horario: 10am - 7pm",
+    "totalDiasCiclo": 7,
+    "fechaAncla": "2026-03-23",
+    "dias": [
+      {
+        "n": 1,
+        "in": "10:00",
+        "out": "19:00"
+      },
+      {
+        "n": 2,
+        "in": "10:00",
+        "out": "19:00"
+      },
+      {
+        "n": 3,
+        "in": "10:00",
+        "out": "19:00"
+      },
+      {
+        "n": 4,
+        "in": "10:00",
+        "out": "19:00"
+      },
+      {
+        "n": 5,
+        "in": "10:00",
+        "out": "19:00"
+      },
+      {
+        "n": 6,
+        "tipo": "libre"
+      },
+      {
+        "n": 7,
+        "tipo": "libre"
+      }
+    ]
+  }
+]

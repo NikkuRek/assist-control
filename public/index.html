@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Asistencia</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body class="bg-slate-100 h-screen flex overflow-hidden font-sans">
+
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col z-10">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200">
+            <i class="fa-solid fa-shield-halved text-blue-600 text-xl mr-3"></i>
+            <span class="font-bold text-gray-800 tracking-tight">Access Manager</span>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-1">
+            <button
+                class="w-full text-left py-2.5 px-4 rounded-lg bg-blue-50 text-blue-700 font-medium flex items-center">
+                <i class="fa-solid fa-table-list w-6"></i> Reportes
+            </button>
+            <button
+                class="w-full text-left py-2.5 px-4 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition flex items-center opacity-50 cursor-not-allowed">
+                <i class="fa-solid fa-clock-rotate-left w-6"></i> Historial
+            </button>
+            <button onclick="window.location.href='personal.html'"
+                class="w-full text-left py-2.5 px-4 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition flex items-center cursor-pointer">
+                <i class="fa-solid fa-users w-6"></i> Personal
+            </button>
+            <button onclick="window.location.href='horarios.html'"
+                class="w-full text-left py-2.5 px-4 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition flex items-center cursor-pointer">
+                <i class="fa-regular fa-clock w-6"></i> Horarios
+            </button>
+        </nav>
+
+        <div class="p-4 border-t border-gray-200">
+            <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-user text-xs"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium text-gray-700">Admin</p>
+                    <p class="text-xs text-gray-500">Sesión Activa</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-hidden relative">
+
+        <header class="bg-white border-b border-gray-200 h-16 flex justify-between items-center px-8">
+            <h2 class="text-lg font-semibold text-gray-800">Control de Asistencia</h2>
+            <div class="text-sm text-gray-500 flex items-center bg-gray-100 px-3 py-1 rounded-md">
+                <i class="fa-regular fa-calendar mr-2"></i>
+                <span id="currentDate"></span>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-auto p-8">
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+
+                    <div class="md:col-span-2">
+                        <label
+                            class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Desde</label>
+                        <input type="date" id="startDate"
+                            class="w-full bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label
+                            class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Hasta</label>
+                        <input type="date" id="endDate"
+                            class="w-full bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                    </div>
+
+                    <div class="md:col-span-4">
+                        <label
+                            class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Departamento</label>
+                        <select id="deptFilter" onchange="filterTable()"
+                            class="w-full bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                            <option value="">Todos los Departamentos</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-4 flex gap-2">
+                        <button onclick="fetchData()"
+                            class="flex-1 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 transition flex justify-center items-center shadow-sm">
+                            <i class="fa-solid fa-magnifying-glass mr-2"></i> Consultar
+                        </button>
+                        <button onclick="exportToExcel()"
+                            class="flex-1 text-green-800 bg-green-100 hover:bg-green-200 border border-green-300 font-medium rounded-lg text-sm px-5 py-2.5 transition flex justify-center items-center shadow-sm">
+                            <i class="fa-solid fa-file-excel mr-2 text-green-700"></i> Excel
+                        </button>
+                    </div>
+
+                    <div class="md:col-span-4 relative">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Buscar
+                            Empleado</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <i class="fa-solid fa-filter text-gray-400"></i>
+                            </div>
+                            <input type="text" id="searchInput" onkeyup="filterTable()" disabled
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                placeholder="Nombre o ID...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden relative min-h-[400px]">
+
+                <div id="loading"
+                    class="hidden absolute inset-0 bg-white/80 z-20 flex flex-col justify-center items-center backdrop-blur-sm">
+                    <i class="fa-solid fa-circle-notch fa-spin text-4xl text-blue-600 mb-3"></i>
+                    <p class="text-gray-600 font-medium">Procesando registros...</p>
+                </div>
+
+                <div id="emptyState" class="flex flex-col justify-center items-center py-24 text-gray-400">
+                    <div class="bg-gray-50 p-6 rounded-full mb-4">
+                        <i class="fa-solid fa-clipboard-list text-3xl text-gray-300"></i>
+                    </div>
+                    <p class="font-medium">Seleccione un rango de fechas para ver el reporte.</p>
+                </div>
+
+                <table class="min-w-full hidden" id="mainTable">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="py-3.5 px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                Fecha</th>
+                            <th class="py-3.5 px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                Empleado</th>
+                            <th class="py-3.5 px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                ID</th>
+                            <th
+                                class="py-3.5 px-6 text-center text-xs font-bold text-blue-600 uppercase tracking-wider bg-blue-50/50">
+                                Entrada</th>
+                            <th
+                                class="py-3.5 px-6 text-center text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50/50">
+                                Salida</th>
+                            <th
+                                class="py-3.5 px-6 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                Estatus</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-gray-100">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 flex justify-between items-center text-xs text-gray-400 px-2">
+                <span id="recordCount">Esperando datos...</span>
+                <span>Sistema ISAPI v2.0</span>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- VARIABLES GLOBALES ---
+        let PROCESSED_DATA = [];
+        let CURRENT_VIEW_DATA = []; // Guardará lo que se está viendo actualmente (buscado/filtrado)
+        let DB_DEPARTMENTS = [];
+        const today = new Date().toISOString().split('T')[0];
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('startDate').value = today;
+            document.getElementById('endDate').value = today;
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-ES', options);
+            await loadDepartments();
+        });
+
+        async function loadDepartments() {
+            try {
+                const res = await fetch('/api/departments');
+                DB_DEPARTMENTS = await res.json();
+                if (!Array.isArray(DB_DEPARTMENTS)) DB_DEPARTMENTS = [];
+
+                const select = document.getElementById('deptFilter');
+                if (select) {
+                    select.innerHTML = '<option value="">Todos los Departamentos</option>';
+                    DB_DEPARTMENTS.forEach(d => {
+                        select.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+                    });
+                }
+            } catch (e) {
+                console.error("Error cargando departamentos", e);
+            }
+        }
+
+        // --- FETCH DATA ---
+        async function fetchData() {
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+
+            toggleLoading(true);
+
+            try {
+                const response = await fetch(`/api/eventos?start=${start}&end=${end}`);
+                if (!response.ok) throw new Error('Error de conexión');
+
+                const rawData = await response.json();
+
+                if (rawData.length === 0) {
+                    showEmpty("No se encontraron registros en estas fechas.");
+                    toggleLoading(false);
+                    return;
+                }
+
+                // --- EL CORAZÓN DE LA LÓGICA (Procesamiento) ---
+                // Convertimos la lista plana de eventos en un resumen por día/persona
+                processDataToSummary(rawData);
+
+                // Habilitar buscador
+                document.getElementById('searchInput').disabled = false;
+
+                // Aplicamos los filtros actuales y renderizamos
+                filterTable();
+
+                toggleLoading(false);
+
+            } catch (error) {
+                toggleLoading(false);
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // --- LÓGICA DE AGRUPACIÓN (Entrada/Salida) ---
+        function processDataToSummary(rawData) {
+            const summaryMap = new Map();
+
+            rawData.forEach(event => {
+                // Clave única: Fecha + ID de Empleado (Ej: "2025-12-26-11785227")
+                const key = `${event.fecha}-${event.id}`;
+
+                if (!summaryMap.has(key)) {
+                    // Si es la primera vez que vemos a esta persona este día, inicializamos
+                    summaryMap.set(key, {
+                        fecha: event.fecha,
+                        id: event.id,
+                        nombre: event.nombre,
+                        depto: event.depto || 'Sin Asignar',
+                        horaEntrada: event.schedIn === "SIN_ASIGNAR" ? "" : event.hora, // La primera vez siempre es la entrada (si viene ordenado)
+                        horaSalida: null, // Aún no sabemos la salida
+                        schedIn: event.schedIn || "LIBRE",
+                        schedOut: event.schedOut || "LIBRE"
+                    });
+                } else {
+                    // Si ya existe, actualizamos la salida con la hora actual
+                    // Como recorremos en orden, la última hora que toque será la salida final
+                    const record = summaryMap.get(key);
+
+                    // Solo actualizamos salida si es diferente a la entrada (para evitar ruido de milisegundos)
+                    if (event.hora !== record.horaEntrada && event.schedIn !== "SIN_ASIGNAR") {
+                        record.horaSalida = event.hora;
+                    }
+                }
+            });
+
+            // Convertimos el Map a un Array para poder ordenarlo y filtrarlo
+            PROCESSED_DATA = Array.from(summaryMap.values());
+
+            // Ordenar por fecha y luego por nombre
+            PROCESSED_DATA.sort((a, b) => {
+                if (a.fecha !== b.fecha) return a.fecha.localeCompare(b.fecha);
+                return a.nombre.localeCompare(b.nombre);
+            });
+        }
+
+        // --- RENDERIZAR TABLA ---
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            const table = document.getElementById('mainTable');
+            const emptyState = document.getElementById('emptyState');
+            const countLabel = document.getElementById('recordCount');
+
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                table.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.innerHTML = '<p class="text-gray-400">No hay coincidencias con la búsqueda.</p>';
+                return;
+            }
+
+            table.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            data.forEach(row => {
+                let entradaDisp = `<span class="font-mono font-bold text-blue-700">${row.horaEntrada || ""}</span>`;
+                let salidaHtml = '<span class="text-gray-300 italic text-xs">Sin registro</span>';
+                let estatusHtml = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Activo</span>';
+
+                if (row.schedIn === "SIN_ASIGNAR") {
+                    entradaDisp = '<span class="text-gray-400 font-mono cursor-not-allowed" title="Sin horario asignado">-</span>';
+                    salidaHtml = '<span class="text-gray-400 font-mono cursor-not-allowed" title="Sin horario asignado">-</span>';
+                    estatusHtml = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-gray-100 text-gray-500 border border-gray-200">Sin Horario</span>';
+                } else if (row.horaSalida) {
+                    salidaHtml = `<span class="font-mono font-bold text-gray-700">${row.horaSalida}</span>`;
+                    estatusHtml = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">Jornada Completada</span>';
+                } else {
+                    // Si no ha marcado salida, quizás sigue trabajando
+                    estatusHtml = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">En Sitio</span>';
+                }
+
+                const tr = `
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100 last:border-0 group">
+                        <td class="py-4 px-6 text-gray-600 text-sm whitespace-nowrap">${row.fecha}</td>
+                        <td class="py-4 px-6">
+                            <div class="text-gray-800 font-medium text-sm group-hover:text-blue-600 transition">${row.nombre}</div>
+                            <div class="text-indigo-600 text-[11px] font-bold mt-0.5"><i class="fa-regular fa-building mr-1"></i>${row.depto}</div>
+                        </td>
+                        <td class="py-4 px-6 text-gray-400 text-xs font-mono">${row.id}</td>
+                        <td class="py-4 px-6 text-center bg-blue-50/30">
+                            ${entradaDisp}
+                        </td>
+                        <td class="py-4 px-6 text-center bg-orange-50/30">
+                            ${salidaHtml}
+                        </td>
+                        <td class="py-4 px-6 text-center">
+                            ${estatusHtml}
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += tr;
+            });
+
+            countLabel.textContent = `Mostrando ${data.length} registros calculados.`;
+        }
+
+        function filterTable() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const deptFilter = document.getElementById('deptFilter').value;
+
+            const filtered = PROCESSED_DATA.filter(item => {
+                const nombreStr = (item.nombre || "").toLowerCase();
+                const idStr = (item.id || "").toLowerCase();
+                const deptoStr = (item.depto || "");
+
+                const matchesText = nombreStr.includes(term) || idStr.includes(term);
+                const matchesDept = deptFilter === "" || deptoStr === deptFilter;
+
+                return matchesText && matchesDept;
+            });
+
+            CURRENT_VIEW_DATA = filtered;
+            renderTable(filtered);
+        }
+
+        // --- EXPORTAR A EXCEL ---
+        async function exportToExcel() {
+            if (CURRENT_VIEW_DATA.length === 0) {
+                Swal.fire('Atención', 'No hay datos para exportar.', 'warning');
+                return;
+            }
+
+            const workbook = new ExcelJS.Workbook();
+            workbook.creator = 'App Asistencia';
+            workbook.created = new Date();
+
+            // --- 0 ' INSERTAR LOGO PREVIASÍS ---
+            async function fetchImageAsBase64(url) {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const blob = await response.blob();
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result.split(',')[1]);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            }
+
+            let base64Data = null;
+            let logoId = null;
+            try {
+                try {
+                    base64Data = await fetchImageAsBase64("/api/logo");
+                } catch (proxyErr) {
+                    console.warn("Proxy /api/logo falló, intentando URL directa:", proxyErr.message);
+                    base64Data = await fetchImageAsBase64("https://previasis.com/aws/previasis0.png");
+                }
+                if (base64Data) {
+                    logoId = workbook.addImage({ base64: base64Data, extension: 'png' });
+                }
+            } catch (e) {
+                console.warn("No se pudo cargar el logo:", e);
+            }
+
+            // Agrupar la data actual por departamentos
+            const deptos = [...new Set(CURRENT_VIEW_DATA.map(d => d.depto || 'Sin Asignar'))].sort();
+
+            for (const depto of deptos) {
+                const deptoData = CURRENT_VIEW_DATA.filter(d => (d.depto || 'Sin Asignar') === depto);
+                if (deptoData.length === 0) continue;
+
+                // Nombres de hoja en Excel no pueden exceder 31 caracteres ni contener ciertos caracteres
+                let sheetName = String(depto).replace(/[\\/?*[\]:]/g, '').trim().substring(0, 31);
+                if (!sheetName) sheetName = "Estatus";
+
+                const worksheet = workbook.addWorksheet(sheetName);
+
+                if (logoId !== null && logoId !== undefined) {
+                    worksheet.addImage(logoId, {
+                        tl: { col: 0.1, row: 0.2 },
+                        ext: { width: 250, height: 105 },
+                        editAs: 'oneCell'
+                    });
+                }
+
+                // --- 1. CONFIGURACIÓN DE COLUMNAS (Anchos exactos) Y VISTAS ---
+                worksheet.columns = [
+                    { width: 12 }, { width: 25 }, { width: 25 }, { width: 12 }, { width: 18 },
+                    { width: 15 }, { width: 18 }, { width: 18 }, { width: 15 }, { width: 18 },
+                    { width: 25 }, { width: 12 }, { width: 12 }
+                ];
+
+                worksheet.properties.defaultRowHeight = 15;
+                worksheet.properties.tabColor = { argb: 'FF165C3B' };
+
+                // --- 2. DISEÑO DEL DASHBOARD (Zona Gris Superior) ---
+                // Colorear el fondo del Dashboard (C2 a K6 - Diseño más compacto a petición del usuario)
+                for (let i = 2; i <= 6; i++) {
+                    for (let j = 3; j <= 11; j++) { // 11 es la columna K
+                        const cell = worksheet.getCell(i, j);
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF5F5F5' } };
+                    }
+                }
+
+                // Buscador: Consultar Empleado (Fila 3) centrado visualmente
+                worksheet.mergeCells('D3:E3');
+                const lblSearch = worksheet.getCell('D3');
+                lblSearch.value = "Consultar Empleado:";
+                lblSearch.font = { bold: true, color: { argb: 'FF595959' } };
+                lblSearch.alignment = { horizontal: 'right', vertical: 'middle' };
+
+                worksheet.mergeCells('F3:I3');
+                const searchCell = worksheet.getCell('F3');
+                searchCell.value = document.getElementById('searchInput').value || "Todos";
+                searchCell.font = { bold: true };
+                searchCell.alignment = { horizontal: 'center', vertical: 'middle' };
+                searchCell.border = { bottom: { style: 'medium', color: { argb: 'FF165C3B' } } };
+
+                const lastRow = 11 + deptoData.length;
+                
+                // --- 2.5 NOMBRES ÚNICOS PARA LA LISTA DESPLEGABLE ---
+                const uniqueNames = [...new Set(deptoData.map(d => d.nombre))].filter(Boolean).sort();
+                uniqueNames.unshift("Todos");
+
+                const hiddenCol = 27; // Columna 'AA'
+                uniqueNames.forEach((name, idx) => {
+                    worksheet.getCell(idx + 1, hiddenCol).value = name;
+                });
+                worksheet.getColumn(hiddenCol).hidden = true;
+
+                if (uniqueNames.length > 0) {
+                    searchCell.dataValidation = {
+                        type: 'list',
+                        allowBlank: true,
+                        formulae: [`=$AA$1:$AA$${uniqueNames.length}`]
+                    };
+                }
+
+                // Cabeceras y Mapeo de KPIs (Fila 4 y 5) repartidos equitativamente hasta la K
+                const kpiCols = [
+                    { start: 3, end: 3 },   // C
+                    { start: 4, end: 5 },   // D-E
+                    { start: 6, end: 7 },   // F-G
+                    { start: 8, end: 9 },   // H-I
+                    { start: 10, end: 10 }, // J
+                    { start: 11, end: 11 }  // K
+                ];
+                
+                const kpiHeaders = ["Total Tardanzas", "Total Ausencias", "Total Sobre-tiempo", "Total Antes de tiempo", "Minutos Retraso", "Total Horas"];
+                
+                // Las fórmulas ahora apuntan a F3
+                const formulas = [
+                    `COUNTIFS(C12:C${lastRow}, F3, G12:G${lastRow}, "TARDE")`,
+                    `COUNTIFS(C12:C${lastRow}, F3, G12:G${lastRow}, "AUSENTE")`,
+                    `COUNTIFS(C12:C${lastRow}, F3, J12:J${lastRow}, "SOBRE-TIEMPO")`,
+                    `COUNTIFS(C12:C${lastRow}, F3, J12:J${lastRow}, "ANTES DE TIEMPO")`,
+                    `SUMIFS(L12:L${lastRow}, C12:C${lastRow}, F3)`,
+                    `SUMIFS(M12:M${lastRow}, C12:C${lastRow}, F3)`
+                ];
+
+                kpiHeaders.forEach((text, i) => {
+                    const c1 = kpiCols[i].start;
+                    const c2 = kpiCols[i].end;
+                    
+                    if (c1 !== c2) {
+                        worksheet.mergeCells(4, c1, 4, c2);
+                        worksheet.mergeCells(5, c1, 5, c2);
+                    }
+                    
+                    const headerCell = worksheet.getCell(4, c1);
+                    headerCell.value = text;
+                    headerCell.font = { size: 9, bold: true, color: { argb: 'FF595959' } };
+                    headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
+                    headerCell.border = { bottom: { style: 'thin', color: { argb: 'FFD9D9D9' } } };
+
+                    const valCell = worksheet.getCell(5, c1);
+                    valCell.value = { formula: formulas[i] };
+                    valCell.font = { size: 14, bold: true, color: { argb: 'FF165C3B' } }; 
+                    valCell.alignment = { horizontal: 'center', vertical: 'middle' };
+                    valCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFFFF' } };
+                    valCell.border = { outline: { style: 'thin', color: { argb: 'FFFFFFFF' } } };
+                });
+
+                // --- 3. TÍTULOS CENTRALES SIMÉTRICOS (Filas 8 y 9 abarcando A-K) ---
+                worksheet.mergeCells('A8:K8');
+                const title = worksheet.getCell('A8');
+                title.value = "Reporte de Asistencia";
+                title.font = { size: 15, bold: true, color: { argb: 'FF165C3B' } };
+                title.alignment = { horizontal: 'center', vertical: 'middle' };
+
+                const formatDate = (d) => {
+                    if (!d) return '';
+                    const p = d.split('-');
+                    return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : d;
+                };
+                const fromStr = formatDate(document.getElementById('startDate').value);
+                const toStr = formatDate(document.getElementById('endDate').value);
+
+                worksheet.mergeCells('A9:K9');
+                const subtitle = worksheet.getCell('A9');
+                subtitle.value = `Departamento: ${sheetName}   |   Semana del ${fromStr} al ${toStr}`;
+                subtitle.font = { size: 11, italic: true, color: { argb: 'FF808080' } };
+                subtitle.alignment = { horizontal: 'center', vertical: 'middle' };
+
+                // --- 4. CABECERA Y DATOS INTEGRADOS EN TABLA (Fila 11) ---
+                const NO_SCHEDULE_TEXT = "Sin Horario";
+                const tableRows = deptoData.map((data, i) => {
+                    const r = i + 12; // La tabla empieza en 11, primera fila de datos es 12
+                    return [
+                        data.id,
+                        data.depto,
+                        data.nombre,
+                        data.fecha,
+                        data.schedIn === "SIN_ASIGNAR" ? NO_SCHEDULE_TEXT : data.schedIn,
+                        data.schedIn === "SIN_ASIGNAR" ? NO_SCHEDULE_TEXT : (data.horaEntrada || ""),
+                        { formula: `IF(E${r}="${NO_SCHEDULE_TEXT}", "${NO_SCHEDULE_TEXT}", IF(E${r}="LIBRE", "DÍA LIBRE", IF(F${r}="", "AUSENTE", IF(MOD(F${r},1) > (MOD(E${r},1) + (10/1440)), "TARDE", "A TIEMPO"))))` },
+                        data.schedOut === "SIN_ASIGNAR" ? NO_SCHEDULE_TEXT : data.schedOut,
+                        data.schedIn === "SIN_ASIGNAR" ? NO_SCHEDULE_TEXT : (data.horaSalida || ""),
+                        { formula: `IF(H${r}="${NO_SCHEDULE_TEXT}", "${NO_SCHEDULE_TEXT}", IF(H${r}="LIBRE", "DÍA LIBRE", IF(I${r}="", "NO MARCÓ", IF(MOD(I${r},1)<(MOD(H${r},1)-(30/1440)), "ANTES DE TIEMPO", IF(MOD(I${r},1)>(MOD(H${r},1)+(30/1440)), "SOBRE-TIEMPO", "A TIEMPO")))))` },
+                        data.justificacion || "",
+                        { formula: `IF(OR(E${r}="LIBRE", E${r}="${NO_SCHEDULE_TEXT}"), 0, IF(F${r}="", 0, MAX(0, ROUND((F${r}-E${r})*1440, 0))))` },
+                        { formula: `IF(OR(E${r}="LIBRE", E${r}="${NO_SCHEDULE_TEXT}", H${r}="LIBRE", H${r}="${NO_SCHEDULE_TEXT}"), 0, IF(OR(F${r}="", I${r}=""), 0, MAX(0, ROUND(((I${r}-F${r})*24)-1, 2))))` }
+                    ];
+                });
+
+                worksheet.addTable({
+                    name: 'Tabla' + sheetName.replace(/\s+/g, ''),
+                    ref: 'A11',
+                    headerRow: true,
+                    totalsRow: false,
+                    style: { theme: null, showRowStripes: false },
+                    columns: [
+                        { name: 'ID Empleado', filterButton: true },
+                        { name: 'Departamento', filterButton: true },
+                        { name: 'Nombre', filterButton: true },
+                        { name: 'Fecha', filterButton: true },
+                        { name: 'Entrada Programada', filterButton: false },
+                        { name: 'Hora Entrada', filterButton: false },
+                        { name: 'Estatus Entrada', filterButton: true },
+                        { name: 'Salida Programada', filterButton: false },
+                        { name: 'Hora Salida', filterButton: false },
+                        { name: 'Estatus Salida', filterButton: true },
+                        { name: 'Justificacion', filterButton: true },
+                        { name: 'Retraso (min)', filterButton: false },
+                        { name: 'H trabajo', filterButton: false }
+                    ],
+                    rows: tableRows,
+                });
+
+                // --- RE-APLICAR ESTÉTICA ORIGINAL (Cabecera Verde Previasís) ---
+                const headerRowStyles = worksheet.getRow(11);
+                headerRowStyles.eachCell((cell) => {
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF165C3B' } };
+                    cell.font = { color: { argb: 'FFFFFFFF' }, bold: true };
+                    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+                    cell.border = { outline: { outline: true, style: 'thin', color: { argb: 'FFFFFFFF' } } };
+                });
+
+                // Ajustar alineación de la tabla
+                for (let i = 12; i < 12 + tableRows.length; i++) {
+                    const row = worksheet.getRow(i);
+                    row.eachCell({ includeEmpty: true }, (cell) => {
+                        cell.alignment = { horizontal: 'center' };
+                    });
+                    row.getCell(2).alignment = { horizontal: 'left' }; 
+                    row.getCell(3).alignment = { horizontal: 'left' }; 
+                }
+
+                // --- 5. FORMATO CONDICIONAL ---
+                const lastRowTable = 11 + tableRows.length;
+                if (tableRows.length > 0) {
+                    worksheet.addConditionalFormatting({
+                        ref: `G12:G${lastRowTable}`,
+                        rules: [
+                            { type: 'cellIs', operator: 'equal', formulae: ['"TARDE"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFC00000' } }, font: { color: { argb: 'FFFFFFFF' }, bold: true } } },
+                            { type: 'cellIs', operator: 'equal', formulae: ['"AUSENTE"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFE699' } }, font: { color: { argb: 'FFC65911' }, bold: true } } }
+                        ]
+                    });
+                    worksheet.addConditionalFormatting({
+                        ref: `J12:J${lastRowTable}`,
+                        rules: [
+                            { type: 'cellIs', operator: 'equal', formulae: ['"ANTES DE TIEMPO"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFC00000' } }, font: { color: { argb: 'FFFFFFFF' }, bold: true } } },
+                            { type: 'cellIs', operator: 'equal', formulae: ['"SOBRE-TIEMPO"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFDDEBF7' } }, font: { color: { argb: 'FF2F75B5' }, bold: true } } },
+                            { type: 'cellIs', operator: 'equal', formulae: ['"NO MARCÓ"'], style: { font: { color: { argb: 'FFA6A6A6' } } } }
+                        ]
+                    });
+                }
+                
+                // --- 6. UX FINAL ---
+                worksheet.views = [
+                    {
+                        state: 'frozen',
+                        xSplit: 0,
+                        ySplit: 11,
+                        showGridLines: false
+                    }
+                ];
+            } // Fin de bucle de departamentos
+
+            // Exportar (Si no hubo hojas, el libro estará vacío, lo cual no pasará por el IF superior)
+            const buffer = await workbook.xlsx.writeBuffer();
+            saveAs(new Blob([buffer]), `Asistencia_Previasis.xlsx`);
+        }
+
+        // UI Helpers
+        function toggleLoading(isLoading) {
+            const loading = document.getElementById('loading');
+            const empty = document.getElementById('emptyState');
+            if (isLoading) {
+                loading.classList.remove('hidden');
+                empty.classList.add('hidden');
+            } else {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function showEmpty(msg) {
+            const empty = document.getElementById('emptyState');
+            const table = document.getElementById('mainTable');
+            table.classList.add('hidden');
+            empty.classList.remove('hidden');
+            empty.innerHTML = `<p>${msg}</p>`;
+        }
+    </script>
+</body>
+
+</html>

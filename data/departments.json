@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1",
+    "name": "CIAPAD",
+    "scheduleId": ""
+  },
+  {
+    "id": "7",
+    "name": "TELEMATICA",
+    "scheduleId": ""
+  },
+  {
+    "id": "8",
+    "name": "ADMINISTRACION",
+    "scheduleId": "FIJO_OFICINA"
+  },
+  {
+    "id": "10",
+    "name": "CMSF OESTE",
+    "scheduleId": ""
+  },
+  {
+    "id": "11",
+    "name": "VENTAS",
+    "scheduleId": ""
+  },
+  {
+    "id": "13",
+    "name": "LABORATORIO SANTA ANA",
+    "scheduleId": "FIJO_LABORATORIO"
+  },
+  {
+    "id": "14",
+    "name": "RADIOLOGIA",
+    "scheduleId": "FIJO_RADIOLOGIA"
+  },
+  {
+    "id": "15",
+    "name": "SUSCRIPCION",
+    "scheduleId": "FIJO_OFICINA"
+  },
+  {
+    "id": "16",
+    "name": "SINIESTROS",
+    "scheduleId": "FIJO_OFICINA"
+  }
+]

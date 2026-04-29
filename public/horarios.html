@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body class="bg-slate-100 h-screen flex overflow-hidden font-sans">
 
     <aside class="w-64 bg-white border-r border-gray-200 flex flex-col z-10">
@@ -16,23 +18,31 @@
             <span class="font-bold text-gray-800">Access Manager</span>
         </div>
         <nav class="flex-1 p-4 space-y-1">
-            <a href="index.html" class="block w-full text-left py-2.5 px-4 rounded-lg text-gray-600 hover:bg-gray-50 flex items-center">
-                <i class="fa-solid fa-table-list w-6"></i> Reporte Diario
+            <a href="index.html"
+                class="block w-full text-left py-2.5 px-4 rounded-lg text-gray-600 hover:bg-gray-50 flex items-center">
+                <i class="fa-solid fa-table-list w-6"></i> Reportes
             </a>
-            <a href="horarios.html" class="block w-full text-left py-2.5 px-4 rounded-lg bg-blue-50 text-blue-700 font-medium flex items-center border border-blue-100">
-                <i class="fa-regular fa-clock w-6"></i> Configuración
+            <a href="personal.html"
+                class="block w-full text-left py-2.5 px-4 rounded-lg text-gray-600 hover:bg-gray-50 flex items-center">
+                <i class="fa-solid fa-users w-6"></i> Personal
+            </a>
+            <a href="horarios.html"
+                class="block w-full text-left py-2.5 px-4 rounded-lg bg-blue-50 text-blue-700 font-medium flex items-center border border-blue-100">
+                <i class="fa-regular fa-clock w-6"></i> Horarios
             </a>
         </nav>
     </aside>
 
     <main class="flex-1 flex flex-col overflow-hidden relative">
-        
+
         <div class="bg-white border-b border-gray-200 px-8 pt-4 flex justify-between items-end">
             <div class="flex space-x-8">
-                <button onclick="switchTab('employees')" id="tab-employees" class="pb-4 px-2 border-b-2 border-blue-600 text-blue-600 font-bold transition">
+                <button onclick="switchTab('employees')" id="tab-employees"
+                    class="pb-4 px-2 border-b-2 border-blue-600 text-blue-600 font-bold transition">
                     <i class="fa-solid fa-users mr-2"></i> Empleados
                 </button>
-                <button onclick="switchTab('schedules')" id="tab-schedules" class="pb-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium transition">
+                <button onclick="switchTab('schedules')" id="tab-schedules"
+                    class="pb-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium transition">
                     <i class="fa-solid fa-timeline mr-2"></i> Ciclos y Horarios
                 </button>
             </div>
@@ -41,12 +51,14 @@
         <div id="view-employees" class="flex-1 overflow-auto p-8 grid grid-cols-1 xl:grid-cols-3 gap-6">
             <div class="xl:col-span-1">
                 <div class="bg-white rounded-xl shadow-sm border p-6 sticky top-6">
-                    <h3 class="font-bold text-gray-800 mb-4"><i class="fa-solid fa-user-plus mr-2 text-blue-600"></i> Nuevo Empleado</h3>
-                    
-                    <button onclick="openImportModal()" class="w-full mb-4 bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 font-medium py-2 rounded-lg transition flex items-center justify-center">
+                    <h3 class="font-bold text-gray-800 mb-4"><i class="fa-solid fa-user-plus mr-2 text-blue-600"></i>
+                        Nuevo Empleado</h3>
+
+                    <button onclick="openImportModal()"
+                        class="w-full mb-4 bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 font-medium py-2 rounded-lg transition flex items-center justify-center">
                         <i class="fa-solid fa-download mr-2"></i> Importar del Biométrico
                     </button>
-                    
+
                     <div class="relative flex py-2 items-center">
                         <div class="flex-grow border-t border-gray-200"></div>
                         <span class="flex-shrink-0 mx-4 text-gray-400 text-xs uppercase">O Manualmente</span>
@@ -57,14 +69,17 @@
                         <input type="hidden" id="empDbId">
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">ID (Ficha/Cédula)</label>
-                                <input type="text" id="empId" required class="w-full border rounded-lg p-2.5 bg-gray-50 font-mono">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">ID
+                                    (Ficha/Cédula)</label>
+                                <input type="text" id="empId" required
+                                    class="w-full border rounded-lg p-2.5 bg-gray-50 font-mono">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre</label>
-                                <input type="text" id="empName" required class="w-full border rounded-lg p-2.5 bg-gray-50">
+                                <input type="text" id="empName" required
+                                    class="w-full border rounded-lg p-2.5 bg-gray-50">
                             </div>
-                            
+
                             <div>
                                 <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Departamento</label>
                                 <select id="empDept" class="w-full border rounded-lg p-2.5 bg-gray-50">
@@ -80,15 +95,20 @@
                             </div>
 
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Asignar Horario</label>
-                                <select id="empScheduleSelect" required class="w-full border rounded-lg p-2.5 bg-blue-50 border-blue-200 text-blue-800 font-medium">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Asignar
+                                    Horario</label>
+                                <select id="empScheduleSelect" required
+                                    class="w-full border rounded-lg p-2.5 bg-blue-50 border-blue-200 text-blue-800 font-medium">
                                     <option value="">-- Seleccione --</option>
                                 </select>
                             </div>
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-500/30">
+                            <button type="submit"
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-500/30">
                                 Guardar Empleado
                             </button>
-                            <button type="button" onclick="resetEmpForm()" class="w-full text-gray-400 text-xs mt-2 hover:text-gray-600">Cancelar / Limpiar</button>
+                            <button type="button" onclick="resetEmpForm()"
+                                class="w-full text-gray-400 text-xs mt-2 hover:text-gray-600">Cancelar /
+                                Limpiar</button>
                         </div>
                     </form>
                 </div>
@@ -99,8 +119,10 @@
                     <table class="min-w-full">
                         <thead class="bg-gray-50 border-b">
                             <tr>
-                                <th class="py-3 px-4 text-left text-xs font-bold text-gray-500 uppercase">CI / Nombre</th>
-                                <th class="py-3 px-4 text-left text-xs font-bold text-gray-500 uppercase">Departamento</th>
+                                <th class="py-3 px-4 text-left text-xs font-bold text-gray-500 uppercase">CI / Nombre
+                                </th>
+                                <th class="py-3 px-4 text-left text-xs font-bold text-gray-500 uppercase">Departamento
+                                </th>
                                 <th class="py-3 px-4 text-left text-xs font-bold text-gray-500 uppercase">Horario</th>
                                 <th class="py-3 px-4 text-right"></th>
                             </tr>
@@ -117,48 +139,77 @@
                     <h3 class="font-bold text-gray-800 mb-4 flex items-center">
                         <i class="fa-solid fa-gears mr-2 text-orange-600"></i> Editor de Ciclos
                     </h3>
-                    
+
                     <form onsubmit="saveSchedule(event)" id="formSch">
                         <input type="hidden" id="schId">
-                        
+
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre del Horario</label>
-                                <input type="text" id="schName" placeholder="Ej: Guardia 4x4 o Administrativo" required class="w-full border rounded-lg p-2.5 bg-gray-50">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre del
+                                    Horario</label>
+                                <input type="text" id="schName" placeholder="Ej: Guardia 4x4 o Administrativo" required
+                                    class="w-full border rounded-lg p-2.5 bg-gray-50">
                             </div>
 
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Días del Ciclo</label>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Días del
+                                        Ciclo</label>
                                     <div class="flex">
-                                        <input type="number" id="schTotalDays" min="1" max="60" value="7" class="w-full border rounded-l-lg p-2.5 text-center font-bold text-gray-700">
-                                        <button type="button" onclick="generateCycleTable()" class="bg-orange-100 text-orange-700 px-3 rounded-r-lg hover:bg-orange-200 text-xs font-bold">Generar</button>
+                                        <input type="number" id="schTotalDays" min="1" max="60" value="7"
+                                            class="w-full border rounded-l-lg p-2.5 text-center font-bold text-gray-700">
+                                        <button type="button" onclick="generateCycleTable()"
+                                            class="bg-orange-100 text-orange-700 px-3 rounded-r-lg hover:bg-orange-200 text-xs font-bold">Generar</button>
                                     </div>
                                     <p class="text-[10px] text-gray-400 mt-1">7=Semanal, 14=Rotativo, 4=Guardia</p>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Fecha Ancla</label>
-                                    <input type="date" id="schAnchor" required class="w-full border rounded-lg p-2.5 bg-blue-50 border-blue-200 text-blue-800 font-bold text-sm">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Fecha
+                                        Ancla</label>
+                                    <input type="date" id="schAnchor" required
+                                        class="w-full border rounded-lg p-2.5 bg-blue-50 border-blue-200 text-blue-800 font-bold text-sm">
                                     <p class="text-[10px] text-blue-400 mt-1">Día que inició el "Día 1"</p>
                                 </div>
                             </div>
 
-                            <div class="border rounded-lg overflow-hidden bg-gray-50">
-                                <div class="bg-gray-100 px-3 py-2 text-xs font-bold text-gray-500 flex justify-between">
-                                    <span class="w-8">Día</span>
-                                    <span class="w-16 text-center">Entrada</span>
-                                    <span class="w-16 text-center">Salida</span>
-                                    <span class="w-8 text-center" title="🌙">🌙</span>
-                                    <span class="w-12 text-center">Libre</span>
+                            <!-- LLENADO MASIVO RÁPIDO -->
+                            <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 flex items-end gap-3 shadow-sm mb-4">
+                                <div class="flex-1">
+                                    <label class="block text-[10px] uppercase font-bold text-blue-800 mb-1">Carga Rápida Entrada</label>
+                                    <input type="time" id="bulkIn" value="08:00" class="w-full border border-blue-200 rounded-md p-2 text-sm text-center text-blue-900 focus:ring-2 focus:ring-blue-500 font-medium">
                                 </div>
-                                <div id="cycleRows" class="max-h-[300px] overflow-y-auto divide-y divide-gray-200">
-                                    <div class="p-4 text-center text-xs text-gray-400">Define los días y pulsa "Generar"</div>
+                                <div class="flex-1">
+                                    <label class="block text-[10px] uppercase font-bold text-blue-800 mb-1">Carga Rápida Salida</label>
+                                    <input type="time" id="bulkOut" value="17:00" class="w-full border border-blue-200 rounded-md p-2 text-sm text-center text-blue-900 focus:ring-2 focus:ring-blue-500 font-medium">
+                                </div>
+                                <button type="button" onclick="applyBulkTime()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-md text-sm transition h-[36px] flex items-center shadow" title="Aplicar a todos los días laborables">
+                                    <i class="fa-solid fa-bolt mr-2 text-yellow-300"></i> Aplicar a Todos
+                                </button>
+                            </div>
+
+                            <div class="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
+                                <div class="bg-gray-100 px-4 py-3 text-xs font-bold text-gray-500 flex items-center border-b justify-between">
+                                    <span class="w-16 text-center">Día</span>
+                                    <span class="flex-1 text-center text-blue-800"><i class="fa-solid fa-arrow-right-to-bracket mr-1"></i>Entrada</span>
+                                    <span class="flex-1 text-center text-red-800"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>Salida</span>
+                                    <span class="w-16 text-center" title="Marcar si el turno pasa de media noche">Noche🌙</span>
+                                    <span class="w-16 text-center">Libre🏖️</span>
+                                </div>
+                                <div id="cycleRows" class="max-h-[380px] overflow-y-auto divide-y divide-gray-100 bg-gray-50">
+                                    <div class="p-8 text-center text-sm text-gray-400 flex flex-col items-center justify-center">
+                                        <i class="fa-solid fa-table-list text-3xl mb-3 opacity-30"></i>
+                                        Define el total de días arriba y pulsa "Generar"
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="flex gap-2 pt-2">
-                                <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow">Guardar Ciclo</button>
-                                <button type="button" onclick="resetSchForm()" class="px-4 text-gray-400 hover:text-gray-600 bg-gray-100 rounded-lg"><i class="fa-solid fa-eraser"></i></button>
+                                <button type="submit"
+                                    class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow">Guardar
+                                    Ciclo</button>
+                                <button type="button" onclick="resetSchForm()"
+                                    class="px-4 text-gray-400 hover:text-gray-600 bg-gray-100 rounded-lg"><i
+                                        class="fa-solid fa-eraser"></i></button>
                             </div>
                         </div>
                     </form>
@@ -176,12 +227,14 @@
         <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
                 <h3 class="font-bold text-gray-800">Importar Biométrico</h3>
-                <button onclick="closeImportModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times"></i></button>
+                <button onclick="closeImportModal()" class="text-gray-400 hover:text-gray-600"><i
+                        class="fa-solid fa-times"></i></button>
             </div>
-            
+
             <div class="p-4 bg-blue-50 border-b border-blue-100">
                 <label class="block text-xs font-bold text-blue-800 mb-1">Horario Inicial para seleccionados:</label>
-                <select id="importScheduleSelect" class="w-full border border-blue-300 rounded p-2 text-sm bg-white"></select>
+                <select id="importScheduleSelect"
+                    class="w-full border border-blue-300 rounded p-2 text-sm bg-white"></select>
             </div>
 
             <div class="flex-1 overflow-auto p-0">
@@ -192,7 +245,8 @@
                 <table class="min-w-full hidden" id="tableImport">
                     <thead class="bg-gray-100 sticky top-0">
                         <tr>
-                            <th class="w-10 p-3 text-center"><input type="checkbox" onchange="toggleSelectAll(this)" class="rounded text-indigo-600"></th>
+                            <th class="w-10 p-3 text-center"><input type="checkbox" onchange="toggleSelectAll(this)"
+                                    class="rounded text-indigo-600"></th>
                             <th class="p-3 text-left text-xs font-bold text-gray-500 uppercase">ID</th>
                             <th class="p-3 text-left text-xs font-bold text-gray-500 uppercase">Nombre</th>
                             <th class="p-3 text-left text-xs font-bold text-gray-500 uppercase">Depto.</th>
@@ -202,8 +256,10 @@
                 </table>
             </div>
             <div class="p-4 border-t bg-gray-50 flex justify-end gap-3">
-                <button onclick="closeImportModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg">Cancelar</button>
-                <button onclick="confirmImport()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow">Importar</button>
+                <button onclick="closeImportModal()"
+                    class="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg">Cancelar</button>
+                <button onclick="confirmImport()"
+                    class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow">Importar</button>
             </div>
         </div>
     </div>
@@ -237,16 +293,28 @@
             for (let i = 1; i <= count; i++) {
                 const dayData = existingDays ? existingDays.find(d => d.n === i) : null;
                 const isFree = dayData ? dayData.tipo === 'libre' : false;
-                const inVal = dayData ? dayData.in : (isFree ? '' : '08:00');
-                const outVal = dayData ? dayData.out : (isFree ? '' : '17:00');
-                const isCross = dayData ? dayData.cruce : false;
+                const inVal = dayData ? (dayData.in || '') : (isFree ? '' : '08:00');
+                const outVal = dayData ? (dayData.out || '') : (isFree ? '' : '17:00');
+                const isCross = dayData ? !!dayData.cruce : false;
+                const rowClass = isFree ? 'bg-green-50/50' : 'bg-white hover:bg-gray-50';
+                
                 const row = `
-                    <div class="flex items-center px-3 py-2 bg-white hover:bg-gray-50 transition day-row" data-day="${i}">
-                        <div class="w-8 font-bold text-gray-400 text-sm">#${i}</div>
-                        <div class="w-16 px-1"><input type="time" class="day-in w-full text-xs border rounded p-1 text-center" value="${inVal}" ${isFree ? 'disabled' : ''}></div>
-                        <div class="w-16 px-1"><input type="time" class="day-out w-full text-xs border rounded p-1 text-center" value="${outVal}" ${isFree ? 'disabled' : ''}></div>
-                        <div class="w-8 text-center px-1"><input type="checkbox" class="day-cross w-4 h-4 rounded text-purple-600" ${isCross ? 'checked' : ''} ${isFree ? 'disabled' : ''}></div>
-                        <div class="w-12 text-center px-1"><input type="checkbox" class="day-free w-4 h-4 rounded text-green-500" onchange="toggleDayRow(this)" ${isFree ? 'checked' : ''}></div>
+                    <div class="flex items-center px-4 py-3 ${rowClass} transition day-row border-b border-gray-50" data-day="${i}">
+                        <div class="w-16 font-bold text-gray-400 text-sm flex justify-center items-center">
+                            <span class="bg-gray-100 min-w-[2rem] text-center rounded-md px-2 py-1 shadow-sm border border-gray-200">#${i}</span>
+                        </div>
+                        <div class="flex-1 px-3">
+                            <input type="time" class="day-in w-full text-base font-bold bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-center text-gray-700 hover:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition shadow-inner disabled:bg-gray-100 disabled:text-gray-400 disabled:opacity-40" value="${inVal}" ${isFree ? 'disabled' : ''}>
+                        </div>
+                        <div class="flex-1 px-3">
+                            <input type="time" class="day-out w-full text-base font-bold bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-center text-gray-700 hover:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition shadow-inner disabled:bg-gray-100 disabled:text-gray-400 disabled:opacity-40" value="${outVal}" ${isFree ? 'disabled' : ''}>
+                        </div>
+                        <div class="w-16 flex justify-center items-center">
+                            <input type="checkbox" class="day-cross w-5 h-5 rounded cursor-pointer text-purple-600 border-gray-300 focus:ring-purple-500 disabled:opacity-40" ${isCross ? 'checked' : ''} ${isFree ? 'disabled' : ''} title="Marcar si el turno cruza de media noche hacia el día siguiente">
+                        </div>
+                        <div class="w-16 flex justify-center items-center">
+                            <input type="checkbox" class="day-free w-5 h-5 rounded cursor-pointer text-green-500 border-gray-300 focus:ring-green-500 transition-transform hover:scale-110" onchange="toggleDayRow(this)" ${isFree ? 'checked' : ''} title="Marcar este día como LIBRE">
+                        </div>
                     </div>`;
                 container.innerHTML += row;
             }
@@ -255,7 +323,7 @@
         function toggleDayRow(checkbox) {
             const row = checkbox.closest('.day-row');
             const inputs = row.querySelectorAll('.day-in, .day-out, .day-cross');
-            if (checkbox.checked) { inputs.forEach(i => { i.disabled = true; i.value = ''; i.checked = false; }); row.classList.add('bg-green-50'); } 
+            if (checkbox.checked) { inputs.forEach(i => { i.disabled = true; i.value = ''; i.checked = false; }); row.classList.add('bg-green-50'); }
             else { inputs.forEach(i => i.disabled = false); row.classList.remove('bg-green-50'); }
         }
 
@@ -266,30 +334,36 @@
             document.querySelectorAll('.day-row').forEach(row => {
                 const n = parseInt(row.dataset.day);
                 const isFree = row.querySelector('.day-free').checked;
-                days.push(isFree ? { n, tipo: 'libre' } : {
-                    n, tipo: 'laboral',
-                    in: row.querySelector('.day-in').value,
-                    out: row.querySelector('.day-out').value,
-                    cruce: row.querySelector('.day-cross').checked
-                });
+                if (isFree) {
+                    days.push({ n, tipo: 'libre' });
+                } else {
+                    const cruce = row.querySelector('.day-cross').checked;
+                    const dayObj = {
+                        n,
+                        in: row.querySelector('.day-in').value,
+                        out: row.querySelector('.day-out').value
+                    };
+                    if (cruce) dayObj.cruce = true;
+                    days.push(dayObj);
+                }
             });
             const newSch = { id, nombre: document.getElementById('schName').value, totalDiasCiclo: parseInt(document.getElementById('schTotalDays').value), fechaAncla: document.getElementById('schAnchor').value, dias: days };
             const idx = DB_SCHEDULES.findIndex(s => s.id === id);
-            if(idx >= 0) DB_SCHEDULES[idx] = newSch; else DB_SCHEDULES.push(newSch);
+            if (idx >= 0) DB_SCHEDULES[idx] = newSch; else DB_SCHEDULES.push(newSch);
             await saveData('/api/schedules', DB_SCHEDULES); resetSchForm(); renderSchedules(); populateScheduleSelects(); renderEmployees();
         }
 
         function editSchedule(id) {
-            const s = DB_SCHEDULES.find(x => x.id === id); if(!s) return;
+            const s = DB_SCHEDULES.find(x => x.id === id); if (!s) return;
             document.getElementById('schId').value = s.id; document.getElementById('schName').value = s.nombre;
             document.getElementById('schTotalDays').value = s.totalDiasCiclo; document.getElementById('schAnchor').value = s.fechaAncla;
             generateCycleTable(s.dias);
         }
 
         function deleteSchedule(id) {
-            if(DB_EMPLOYEES.some(e => e.scheduleId === id)) return Swal.fire('Error', 'En uso', 'error');
+            if (DB_EMPLOYEES.some(e => e.scheduleId === id)) return Swal.fire('Error', 'En uso', 'error');
             Swal.fire({ title: '¿Borrar?', icon: 'warning', showCancelButton: true }).then(async r => {
-                if(r.isConfirmed) { DB_SCHEDULES = DB_SCHEDULES.filter(s => s.id !== id); await saveData('/api/schedules', DB_SCHEDULES); renderSchedules(); populateScheduleSelects(); }
+                if (r.isConfirmed) { DB_SCHEDULES = DB_SCHEDULES.filter(s => s.id !== id); await saveData('/api/schedules', DB_SCHEDULES); renderSchedules(); populateScheduleSelects(); }
             });
         }
 
@@ -321,19 +395,19 @@
                 scheduleId: document.getElementById('empScheduleSelect').value
             };
             const idx = DB_EMPLOYEES.findIndex(x => x.uid === newEmp.uid);
-            if(idx >= 0) DB_EMPLOYEES[idx] = newEmp;
-            else { if(DB_EMPLOYEES.some(e => e.id === publicId)) return Swal.fire('Error', 'ID duplicado', 'error'); DB_EMPLOYEES.push(newEmp); }
+            if (idx >= 0) DB_EMPLOYEES[idx] = newEmp;
+            else { if (DB_EMPLOYEES.some(e => e.id === publicId)) return Swal.fire('Error', 'ID duplicado', 'error'); DB_EMPLOYEES.push(newEmp); }
             await saveData('/api/employees', DB_EMPLOYEES); resetEmpForm(); renderEmployees(); renderSchedules();
         }
 
         function renderEmployees() {
             const tbody = document.getElementById('listEmployees'); tbody.innerHTML = '';
-            DB_EMPLOYEES.sort((a,b) => a.nombre.localeCompare(b.nombre));
+            DB_EMPLOYEES.sort((a, b) => a.nombre.localeCompare(b.nombre));
             DB_EMPLOYEES.forEach(emp => {
                 const s = DB_SCHEDULES.find(x => x.id === emp.scheduleId);
                 const schName = s ? s.nombre : '<span class="text-red-400">Sin Asignar</span>';
                 const depto = emp.depto || 'Sin Asignar';
-                
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50 border-b border-gray-50 group">
                         <td class="py-3 px-4 align-middle">
@@ -346,7 +420,7 @@
                              </span>
                         </td>
                         <td class="py-3 px-4 align-middle">
-                            <span class="px-2 py-1 rounded text-xs font-bold ${s?'bg-blue-50 text-blue-600 border border-blue-100':'bg-red-50 text-red-500'}">
+                            <span class="px-2 py-1 rounded text-xs font-bold ${s ? 'bg-blue-50 text-blue-600 border border-blue-100' : 'bg-red-50 text-red-500'}">
                                 ${schName}
                             </span>
                         </td>
@@ -357,16 +431,16 @@
                     </tr>`;
             });
         }
-        
+
         function editEmployee(uid) {
-            const e = DB_EMPLOYEES.find(x => x.uid === uid); if(!e) return;
+            const e = DB_EMPLOYEES.find(x => x.uid === uid); if (!e) return;
             document.getElementById('empDbId').value = e.uid; document.getElementById('empId').value = e.id;
             document.getElementById('empName').value = e.nombre; document.getElementById('empScheduleSelect').value = e.scheduleId;
             document.getElementById('empDept').value = e.depto || 'Sin Asignar';
         }
-        
+
         function deleteEmployee(uid) {
-            Swal.fire({title:'¿Borrar?', icon:'warning', showCancelButton:true}).then(async r=>{ if(r.isConfirmed){ DB_EMPLOYEES = DB_EMPLOYEES.filter(e=>e.uid!==uid); await saveData('/api/employees', DB_EMPLOYEES); renderEmployees(); } });
+            Swal.fire({ title: '¿Borrar?', icon: 'warning', showCancelButton: true }).then(async r => { if (r.isConfirmed) { DB_EMPLOYEES = DB_EMPLOYEES.filter(e => e.uid !== uid); await saveData('/api/employees', DB_EMPLOYEES); renderEmployees(); } });
         }
 
         // --- IMPORTADOR ---
@@ -377,15 +451,15 @@
             try {
                 const users = await (await fetch('/api/hik-users')).json(); HIK_USERS = users;
                 document.getElementById('loaderImport').classList.add('hidden'); document.getElementById('tableImport').classList.remove('hidden');
-                
-                if(users.length === 0) {
+
+                if (users.length === 0) {
                     list.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">No hay usuarios.</td></tr>';
                     return;
                 }
 
                 users.forEach(u => {
-                    const exists = DB_EMPLOYEES.some(e=>e.id==u.id);
-                    
+                    const exists = DB_EMPLOYEES.some(e => e.id == u.id);
+
                     let deptDisplay = '<span class="text-gray-400 italic">--</span>';
                     if (u.department) {
                         deptDisplay = `<span class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded text-xs font-bold border border-indigo-200">${u.department}</span>`;
@@ -402,29 +476,29 @@
                             <td class="p-3">${deptDisplay}</td>
                         </tr>`;
                 });
-            } catch(e) { document.getElementById('loaderImport').innerHTML = `<p class="text-red-500">${e.message}</p>`; }
+            } catch (e) { document.getElementById('loaderImport').innerHTML = `<p class="text-red-500">${e.message}</p>`; }
         }
-        
+
         async function confirmImport() {
-            const ids = Array.from(document.querySelectorAll('.import-check:checked')).map(cb=>cb.value);
+            const ids = Array.from(document.querySelectorAll('.import-check:checked')).map(cb => cb.value);
             const sId = document.getElementById('importScheduleSelect').value;
             // Depto viene directo del biométrico
-            if(!ids.length || !sId) return Swal.fire('Error', 'Seleccione usuarios y horario', 'warning');
-            
-            const news = ids.map(id => { 
-                const u = HIK_USERS.find(x=>x.id==id); 
-                return { 
-                    uid:'EMP_'+Date.now()+Math.random(), 
-                    id:u.id, 
-                    nombre:u.name, 
+            if (!ids.length || !sId) return Swal.fire('Error', 'Seleccione usuarios y horario', 'warning');
+
+            const news = ids.map(id => {
+                const u = HIK_USERS.find(x => x.id == id);
+                return {
+                    uid: 'EMP_' + Date.now() + Math.random(),
+                    id: u.id,
+                    nombre: u.name,
                     depto: u.department || 'Sin Asignar',
-                    scheduleId:sId 
-                }; 
+                    scheduleId: sId
+                };
             });
             DB_EMPLOYEES = DB_EMPLOYEES.concat(news);
             await saveData('/api/employees', DB_EMPLOYEES); closeImportModal(); renderEmployees(); Swal.fire('Éxito', `${news.length} importados`, 'success');
         }
-        function toggleSelectAll(s) { document.querySelectorAll('.import-check').forEach(c=>c.checked=s.checked); }
+        function toggleSelectAll(s) { document.querySelectorAll('.import-check').forEach(c => c.checked = s.checked); }
 
         // --- UTILS ---
         function switchTab(t) {
@@ -436,14 +510,40 @@
         }
         function populateScheduleSelects() {
             const sels = [document.getElementById('empScheduleSelect'), document.getElementById('importScheduleSelect')];
-            sels.forEach(s => { 
-                if(!s) return; s.innerHTML = '<option value="">-- Seleccione --</option>';
-                DB_SCHEDULES.forEach(sch => { const o = document.createElement('option'); o.value=sch.id; o.textContent=sch.nombre; s.appendChild(o); });
+            sels.forEach(s => {
+                if (!s) return; s.innerHTML = '<option value="">-- Seleccione --</option>';
+                DB_SCHEDULES.forEach(sch => { const o = document.createElement('option'); o.value = sch.id; o.textContent = sch.nombre; s.appendChild(o); });
             });
         }
-        async function saveData(u,d) { await fetch(u, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)}); Swal.fire({icon:'success', title:'Guardado', toast:true, position:'top-end', showConfirmButton:false, timer:1500}); }
-        function resetEmpForm() { document.getElementById('formEmp').reset(); document.getElementById('empDbId').value=''; }
-        function resetSchForm() { document.getElementById('formSch').reset(); document.getElementById('schId').value=''; document.getElementById('cycleRows').innerHTML='<div class="p-4 text-center text-xs text-gray-400">Define los días y pulsa "Generar"</div>'; }
+        async function saveData(u, d) { await fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }); Swal.fire({ icon: 'success', title: 'Guardado', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 }); }
+        // --- ACCIONES EXTRAS UI HORARIOS ---
+        function applyBulkTime() {
+            const inTime = document.getElementById('bulkIn').value;
+            const outTime = document.getElementById('bulkOut').value;
+            if(!inTime || !outTime) {
+                return Swal.fire('Falta Información', 'Ingresa entrada y salida en la caja azul.', 'warning');
+            }
+            
+            let applied = 0;
+            const rows = document.querySelectorAll('.day-row');
+            if (rows.length === 0) return Swal.fire('Sin Días', 'Genera los días del ciclo primero.', 'info');
+
+            rows.forEach(row => {
+                const isFree = row.querySelector('.day-free').checked;
+                if (!isFree) {
+                    row.querySelector('.day-in').value = inTime;
+                    row.querySelector('.day-out').value = outTime;
+                    applied++;
+                }
+            });
+            if(applied > 0) {
+                Swal.fire({ icon: 'success', title: `Copiado a ${applied} días laborables`, toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+            }
+        }
+
+        function resetEmpForm() { document.getElementById('formEmp').reset(); document.getElementById('empDbId').value = ''; }
+        function resetSchForm() { document.getElementById('formSch').reset(); document.getElementById('schId').value = ''; document.getElementById('cycleRows').innerHTML = '<div class="p-8 text-center text-sm text-gray-400 flex flex-col items-center justify-center"><i class="fa-solid fa-table-list text-3xl mb-3 opacity-30"></i>Define el total de días arriba y pulsa "Generar"</div>'; }
     </script>
 </body>
+
 </html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal - Access Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="bg-slate-100 h-screen flex overflow-hidden font-sans">
+
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col z-10">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200">
+            <i class="fa-solid fa-shield-halved text-blue-600 text-xl mr-3"></i>
+            <span class="font-bold text-gray-800 tracking-tight">Access Manager</span>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-1">
+            <a href="index.html"
+                class="block w-full text-left py-2.5 px-4 rounded-lg text-gray-600 hover:bg-gray-50 flex items-center">
+                <i class="fa-solid fa-table-list w-6"></i> Reportes
+                <a href="personal.html"
+                    class="block w-full text-left py-2.5 px-4 rounded-lg bg-blue-50 text-blue-700 font-medium flex items-center border border-blue-100">
+                    <i class="fa-solid fa-users w-6"></i> Personal
+                </a>
+                <a href="horarios.html"
+                    class="block w-full text-left py-2.5 px-4 rounded-lg text-gray-600 hover:bg-gray-50 flex items-center">
+                    <i class="fa-regular fa-clock w-6"></i> Horarios
+                </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-hidden relative">
+        <header class="bg-white border-b border-gray-200 h-16 flex justify-between items-center px-8">
+            <h2 class="text-lg font-semibold text-gray-800">Gestión de Personal</h2>
+        </header>
+
+        <div class="flex-1 overflow-auto p-8">
+
+            <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
+                <div class="mb-4">
+                    <h3 class="font-bold text-gray-800 text-lg mb-1"><i
+                            class="fa-solid fa-users-gear mr-2 text-blue-600"></i> Asignaciones Masivas</h3>
+                    <p class="text-xs text-gray-500">Selecciona empleados de la tabla y asígnales un Departamento u
+                        Horario rápidamente.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
+
+                    <!-- Box Dept -->
+                    <div class="flex flex-col sm:flex-row gap-3 items-end">
+                        <div class="flex-1 w-full">
+                            <label
+                                class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Departamento</label>
+                            <select id="bulkDeptSelect"
+                                class="w-full bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                                <option value="">-- Seleccionar Depto --</option>
+                            </select>
+                        </div>
+                        <button onclick="assignBulkDepartment()"
+                            class="w-full sm:w-auto h-[42px] px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg text-sm transition flex justify-center items-center shadow-sm">
+                            <i class="fa-solid fa-building mr-2"></i> Asignar Depto
+                        </button>
+                    </div>
+
+                    <!-- Box Sched -->
+                    <div class="flex flex-col sm:flex-row gap-3 items-end">
+                        <div class="flex-1 w-full">
+                            <label
+                                class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Horario</label>
+                            <select id="bulkScheduleSelect"
+                                class="w-full bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                                <option value="">-- Seleccionar Horario --</option>
+                            </select>
+                        </div>
+                        <button onclick="assignBulkSchedule()"
+                            class="w-full sm:w-auto h-[42px] px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm transition flex justify-center items-center shadow-sm">
+                            <i class="fa-solid fa-clock mr-2"></i> Asignar Horario
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                    <div class="relative w-72">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                        </div>
+                        <input type="text" id="searchInput" onkeyup="filterEmployees()"
+                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2"
+                            placeholder="Buscar empleado...">
+                    </div>
+                    <span id="empCount" class="text-xs font-bold text-gray-400">Cargando...</span>
+                </div>
+
+                <table class="min-w-full">
+                    <thead class="bg-white border-b">
+                        <tr>
+                            <th class="w-12 py-3 px-4 text-center">
+                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                            </th>
+                            <th class="py-3 px-4 text-left text-xs font-bold text-gray-500 uppercase">ID</th>
+                            <th class="py-3 px-4 text-left text-xs font-bold text-gray-500 uppercase">Nombre</th>
+                            <th class="py-3 px-4 text-left text-xs font-bold text-gray-500 uppercase">Depto</th>
+                            <th class="py-3 px-4 text-left text-xs font-bold text-gray-500 uppercase">Horario Actual
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="listEmployees" class="divide-y divide-gray-100">
+                        <!-- Renderizado por JS -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        let DB_EMPLOYEES = [];
+        let DB_DEPARTMENTS = [];
+        let DB_SCHEDULES = [];
+        let DISPLAY_EMPLOYEES = [];
+
+        document.addEventListener('DOMContentLoaded', () => { loadAllData(); });
+
+        async function loadAllData() {
+            try {
+                const [resEmp, resDept, resSch] = await Promise.all([
+                    fetch('/api/employees'),
+                    fetch('/api/departments'),
+                    fetch('/api/schedules')
+                ]);
+                DB_EMPLOYEES = await resEmp.json();
+                DB_DEPARTMENTS = await resDept.json();
+                DB_SCHEDULES = await resSch.json();
+
+                if (!Array.isArray(DB_DEPARTMENTS)) DB_DEPARTMENTS = [];
+                if (!Array.isArray(DB_SCHEDULES)) DB_SCHEDULES = [];
+                if (!Array.isArray(DB_EMPLOYEES)) DB_EMPLOYEES = [];
+
+                // Ordenar por nombre
+                DB_EMPLOYEES.sort((a, b) => a.nombre.localeCompare(b.nombre));
+                DISPLAY_EMPLOYEES = [...DB_EMPLOYEES];
+
+                populateDepartments();
+                populateSchedules();
+                renderEmployees();
+            } catch (e) {
+                console.error("Error cargando datos:", e);
+                Swal.fire('Error', 'No se pudieron cargar los datos de la base de datos.', 'error');
+            }
+        }
+
+        function populateDepartments() {
+            const select = document.getElementById('bulkDeptSelect');
+            select.innerHTML = '<option value="">-- Seleccionar --</option>';
+            DB_DEPARTMENTS.forEach(d => {
+                select.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+            });
+            select.innerHTML += `<option value="Sin Asignar" class="italic text-gray-400">Desvincular (Sin Asignar)</option>`;
+        }
+
+        function populateSchedules() {
+            const select = document.getElementById('bulkScheduleSelect');
+            select.innerHTML = '<option value="">-- Seleccionar --</option>';
+            DB_SCHEDULES.forEach(s => {
+                select.innerHTML += `<option value="${s.id}">${s.nombre}</option>`;
+            });
+            select.innerHTML += `<option value="" class="italic text-gray-400">Desvincular (Sin Asignar)</option>`;
+        }
+
+        function renderEmployees() {
+            const tbody = document.getElementById('listEmployees');
+            const countLabel = document.getElementById('empCount');
+            tbody.innerHTML = '';
+
+            DISPLAY_EMPLOYEES.forEach(emp => {
+                const schedule = DB_SCHEDULES.find(s => s.id === emp.scheduleId);
+                const scheduleName = schedule ? schedule.nombre : "Sin Asignar";
+
+                const deptoBadge = emp.depto && emp.depto !== "Sin Asignar"
+                    ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-gray-100 text-gray-800 border border-gray-200"><i class="fa-regular fa-building mr-1 opacity-70"></i>${emp.depto}</span>`
+                    : ``;
+
+                const schedLabel = scheduleName !== "Sin Asignar"
+                    ? `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100"><i class="fa-regular fa-clock mr-1.5 opacity-70"></i>${scheduleName}</span>`
+                    : `<span class="text-xs text-gray-400 italic">Sin Asignar</span>`;
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-blue-50/50 transition border-b border-gray-50';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 text-center">
+                        <input type="checkbox" value="${emp.uid}" class="emp-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                    </td>
+                    <td class="py-3 px-4 font-mono text-xs text-gray-500">${emp.id}</td>
+                    <td class="py-3 px-4 font-medium text-gray-800 text-sm whitespace-nowrap">${emp.nombre}</td>
+                    <td class="py-3 px-4">${deptoBadge}</td>
+                    <td class="py-3 px-4">${schedLabel}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            countLabel.textContent = `${DISPLAY_EMPLOYEES.length} empleados`;
+
+            // Checkbox logic
+            document.querySelectorAll('.emp-checkbox').forEach(cb => {
+                cb.addEventListener('change', checkSelectAllState);
+            });
+        }
+
+        function filterEmployees() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            if (!term) {
+                DISPLAY_EMPLOYEES = [...DB_EMPLOYEES];
+            } else {
+                DISPLAY_EMPLOYEES = DB_EMPLOYEES.filter(e =>
+                    e.nombre.toLowerCase().includes(term) ||
+                    e.id.includes(term) ||
+                    (e.depto && e.depto.toLowerCase().includes(term))
+                );
+            }
+            renderEmployees();
+
+            // Uncheck the 'select all' box when filtering
+            document.getElementById('selectAll').checked = false;
+        }
+
+        function toggleSelectAll() {
+            const isChecked = document.getElementById('selectAll').checked;
+            document.querySelectorAll('.emp-checkbox').forEach(cb => {
+                cb.checked = isChecked;
+            });
+        }
+
+        function checkSelectAllState() {
+            const total = document.querySelectorAll('.emp-checkbox').length;
+            const checked = document.querySelectorAll('.emp-checkbox:checked').length;
+            const selectAll = document.getElementById('selectAll');
+
+            if (checked === 0) {
+                selectAll.checked = false;
+                selectAll.indeterminate = false;
+            } else if (checked === total) {
+                selectAll.checked = true;
+                selectAll.indeterminate = false;
+            } else {
+                selectAll.checked = false;
+                selectAll.indeterminate = true;
+            }
+        }
+
+        async function assignBulkDepartment() {
+            const selectedUids = Array.from(document.querySelectorAll('.emp-checkbox:checked')).map(cb => cb.value);
+            const deptName = document.getElementById('bulkDeptSelect').value;
+
+            if (selectedUids.length === 0) {
+                return Swal.fire('Aviso', 'Selecciona al menos un empleado marcando la casilla correspondiente.', 'warning');
+            }
+            if (!deptName) {
+                return Swal.fire('Aviso', 'Debes seleccionar el Departamento que deseas asignarles.', 'warning');
+            }
+
+            // Actualizar la base de datos en memoria
+            DB_EMPLOYEES = DB_EMPLOYEES.map(emp => {
+                if (selectedUids.includes(emp.uid)) {
+                    return { ...emp, depto: deptName };
+                }
+                return emp;
+            });
+
+            try {
+                await fetch('/api/employees', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(DB_EMPLOYEES)
+                });
+
+                filterEmployees();
+                document.getElementById('selectAll').checked = false;
+                document.getElementById('selectAll').indeterminate = false;
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Actualizados!',
+                    text: `Se asignó el depto. ${deptName} a ${selectedUids.length} empleado(s).`,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            } catch (e) {
+                Swal.fire('Error', 'No se pudieron guardar los cambios en el servidor', 'error');
+            }
+        }
+
+        async function assignBulkSchedule() {
+            const selectedUids = Array.from(document.querySelectorAll('.emp-checkbox:checked')).map(cb => cb.value);
+            const schedId = document.getElementById('bulkScheduleSelect').value;
+
+            if (selectedUids.length === 0) {
+                return Swal.fire('Aviso', 'Selecciona al menos un empleado marcando la casilla correspondiente.', 'warning');
+            }
+            if (schedId === "" && document.getElementById('bulkScheduleSelect').selectedOptions[0].text !== "Desvincular (Sin Asignar)") {
+                return Swal.fire('Aviso', 'Debes seleccionar un horario.', 'warning');
+            }
+
+            // Actualizar la base de datos en memoria
+            DB_EMPLOYEES = DB_EMPLOYEES.map(emp => {
+                if (selectedUids.includes(emp.uid)) {
+                    return { ...emp, scheduleId: schedId };
+                }
+                return emp;
+            });
+
+            try {
+                await fetch('/api/employees', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(DB_EMPLOYEES)
+                });
+
+                filterEmployees();
+                document.getElementById('selectAll').checked = false;
+                document.getElementById('selectAll').indeterminate = false;
+
+                const selectedSchedObj = DB_SCHEDULES.find(s => s.id === schedId);
+                const schedName = selectedSchedObj ? selectedSchedObj.nombre : 'Sin Asignar';
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Actualizados!',
+                    text: `Se asignó el horario '${schedName}' a ${selectedUids.length} empleado(s).`,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            } catch (e) {
+                Swal.fire('Error', 'No se pudieron guardar los cambios en el servidor', 'error');
+            }
+        }
+    </script>
+</body>
+
+</html>
